@@ -1,6 +1,6 @@
 package med.voll.api.domain.event;
 
-import med.voll.api.domain.shared.DomainEvent;
+import med.voll.api.domain.interfaces.negocio.DomainEvent;
 
 import java.time.LocalDateTime;
 

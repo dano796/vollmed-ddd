@@ -3,9 +3,10 @@ package med.voll.api.domain.service;
 import med.voll.api.domain.aggregates.Consulta;
 import med.voll.api.domain.entities.Medico;
 import med.voll.api.domain.entities.Paciente;
-import med.voll.api.domain.interfaces.IConsultaRepository;
-import med.voll.api.domain.interfaces.IMedicoRepository;
-import med.voll.api.domain.interfaces.IPacienteRepository;
+import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
+import med.voll.api.domain.interfaces.repository.IConsultaRepository;
+import med.voll.api.domain.interfaces.repository.IMedicoRepository;
+import med.voll.api.domain.interfaces.repository.IPacienteRepository;
 import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.value_objects.Especialidad;
 

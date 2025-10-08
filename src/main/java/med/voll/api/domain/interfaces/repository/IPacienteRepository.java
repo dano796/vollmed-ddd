@@ -1,4 +1,4 @@
-package med.voll.api.domain.interfaces;
+package med.voll.api.domain.interfaces.repository;
 
 import med.voll.api.domain.entities.Paciente;
 import org.springframework.data.domain.Page;

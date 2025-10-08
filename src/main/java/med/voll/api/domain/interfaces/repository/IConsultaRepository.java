@@ -1,4 +1,4 @@
-package med.voll.api.domain.interfaces;
+package med.voll.api.domain.interfaces.repository;
 
 import med.voll.api.domain.aggregates.Consulta;
 import med.voll.api.domain.value_objects.Especialidad;

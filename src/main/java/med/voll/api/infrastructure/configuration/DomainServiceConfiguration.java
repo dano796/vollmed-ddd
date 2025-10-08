@@ -1,12 +1,12 @@
 package med.voll.api.infrastructure.configuration;
 
-import med.voll.api.domain.interfaces.IConsultaRepository;
-import med.voll.api.domain.interfaces.IMedicoRepository;
-import med.voll.api.domain.interfaces.IPacienteRepository;
+import med.voll.api.domain.interfaces.repository.IConsultaRepository;
+import med.voll.api.domain.interfaces.repository.IMedicoRepository;
+import med.voll.api.domain.interfaces.repository.IPacienteRepository;
 import med.voll.api.domain.service.CancelacionConsultaService;
 import med.voll.api.domain.service.ReservaConsultaService;
-import med.voll.api.domain.service.ValidadorCancelacionConsulta;
-import med.voll.api.domain.service.ValidadorReservaConsulta;
+import med.voll.api.domain.interfaces.negocio.ValidadorCancelacionConsulta;
+import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

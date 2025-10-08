@@ -1,7 +1,6 @@
 package med.voll.api.infrastructure.service;
 
 import med.voll.api.domain.shared.AggregateRoot;
-import med.voll.api.domain.shared.DomainEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 

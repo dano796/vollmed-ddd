@@ -1,7 +1,8 @@
 package med.voll.api.domain.service;
 
 import med.voll.api.domain.aggregates.Consulta;
-import med.voll.api.domain.interfaces.IConsultaRepository;
+import med.voll.api.domain.interfaces.negocio.ValidadorCancelacionConsulta;
+import med.voll.api.domain.interfaces.repository.IConsultaRepository;
 import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.value_objects.MotivoCancelamiento;
 

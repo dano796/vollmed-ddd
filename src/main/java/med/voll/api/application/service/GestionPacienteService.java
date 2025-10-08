@@ -3,7 +3,7 @@ package med.voll.api.application.service;
 import med.voll.api.application.dto.request.DatosActualizacionPaciente;
 import med.voll.api.application.dto.request.DatosRegistroPaciente;
 import med.voll.api.domain.entities.Paciente;
-import med.voll.api.domain.interfaces.IPacienteRepository;
+import med.voll.api.domain.interfaces.repository.IPacienteRepository;
 import med.voll.api.domain.value_objects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

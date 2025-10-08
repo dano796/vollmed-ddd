@@ -3,6 +3,7 @@ package med.voll.api.domain.shared;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import med.voll.api.domain.interfaces.negocio.DomainEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;

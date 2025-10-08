@@ -1,7 +1,7 @@
 package med.voll.api.infrastructure.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import med.voll.api.domain.interfaces.IUsuarioRepository;
+import med.voll.api.domain.interfaces.repository.IUsuarioRepository;
 import med.voll.api.infrastructure.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

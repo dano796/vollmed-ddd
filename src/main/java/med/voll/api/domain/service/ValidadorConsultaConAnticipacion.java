@@ -1,5 +1,6 @@
 package med.voll.api.domain.service;
 
+import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
 import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.entities.Medico;
 import med.voll.api.domain.entities.Paciente;
