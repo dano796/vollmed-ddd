@@ -1,0 +1,1309 @@
+{
+	"info": {
+		"_postman_id": "voll-med-api-ddd-v2",
+		"name": "Voll Med API - DDD Complete v2.0",
+		"description": "Colección COMPLETA actualizada con TODOS los endpoints incluyendo los nuevos de consultas por ID y listado",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "medico_id",
+			"value": "1",
+			"description": "ID de médico para pruebas"
+		},
+		{
+			"key": "paciente_id",
+			"value": "1",
+			"description": "ID de paciente para pruebas"
+		},
+		{
+			"key": "consulta_id",
+			"value": "1",
+			"description": "ID de consulta para pruebas"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticación",
+			"item": [
+				{
+					"name": "Login - Obtener Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('token', jsonData.jwTtoken);",
+									"    console.log('Token guardado:', jsonData.jwTtoken);",
+									"    pm.test('Login exitoso', function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"} else {",
+									"    pm.test('Error en login', function () {",
+									"        pm.response.to.have.status(403);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"login\": \"admin@vollmed.com\",\n    \"clave\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
+						},
+						"description": "Endpoint para autenticarse y obtener el token JWT"
+					}
+				},
+				{
+					"name": "Test Token Validity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Token válido', function () {",
+									"    pm.response.to.not.have.status(403);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/medicos?size=1",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"],
+							"query": [
+								{
+									"key": "size",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Prueba si el token JWT es válido"
+					}
+				}
+			]
+		},
+		{
+			"name": "👩‍⚕️ Gestión Médica",
+			"item": [
+				{
+					"name": "Registrar Médico - Dra. Ana Silva",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('medico_id', jsonData.id);",
+									"    pm.test('Médico registrado exitosamente', function () {",
+									"        pm.response.to.have.status(201);",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('nombre');",
+									"        pm.expect(jsonData).to.have.property('especialidad');",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Dra. Ana Carolina Silva\",\n    \"email\": \"ana.silva@vollmed.com\",\n    \"telefono\": \"11987654\",\n    \"documento\": \"45678912301\",\n    \"especialidad\": \"GINECOLOGIA\",\n    \"direccion\": {\n        \"calle\": \"Rua Augusta\",\n        \"distrito\": \"Consolação\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"2450\",\n        \"complemento\": \"Sala 808\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Registra nueva médica ginecóloga con teléfono de 8 dígitos"
+					}
+				},
+				{
+					"name": "Registrar Médico - Dr. Roberto Santos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('medico_ortopedista_id', jsonData.id);",
+									"    pm.test('Médico ortopedista registrado', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Dr. Roberto Santos Oliveira\",\n    \"email\": \"roberto.santos@vollmed.com\",\n    \"telefono\": \"11876543\",\n    \"documento\": \"78945612309\",\n    \"especialidad\": \"ORTOPEDIA\",\n    \"direccion\": {\n        \"calle\": \"Avenida Faria Lima\",\n        \"distrito\": \"Itaim Bibi\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"3200\",\n        \"complemento\": \"Torre B - Piso 15\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Registra nuevo médico ortopedista"
+					}
+				},
+				{
+					"name": "Registrar Médico - Dr. Carlos Ferreira",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('medico_dermato_id', jsonData.id);",
+									"    pm.test('Médico dermatólogo registrado', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Dr. Carlos Eduardo Ferreira\",\n    \"email\": \"carlos.ferreira@vollmed.com\",\n    \"telefono\": \"11765432\",\n    \"documento\": \"15975348620\",\n    \"especialidad\": \"DERMATOLOGIA\",\n    \"direccion\": {\n        \"calle\": \"Rua Oscar Freire\",\n        \"distrito\": \"Jardins\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"1200\",\n        \"complemento\": \"Conjunto 45\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Registra nuevo médico dermatólogo"
+					}
+				},
+				{
+					"name": "Listar Médicos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de médicos obtenida', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('content');",
+									"    pm.expect(jsonData).to.have.property('pageable');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/medicos?page=0&size=10&sort=nombre,asc",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (inicia en 0)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Cantidad de elementos por página"
+								},
+								{
+									"key": "sort",
+									"value": "nombre,asc",
+									"description": "Campo y dirección de ordenamiento"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de médicos activos"
+					}
+				},
+				{
+					"name": "Obtener Médico por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Médico obtenido por ID', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('nombre');",
+									"    pm.expect(jsonData).to.have.property('especialidad');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/medicos/{{medico_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["medicos", "{{medico_id}}"]
+						},
+						"description": "Obtiene los detalles de un médico específico por su ID"
+					}
+				},
+				{
+					"name": "Actualizar Médico",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Médico actualizado exitosamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData.nombre).to.include('Actualizada');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": {{medico_id}},\n    \"nombre\": \"Dra. Ana Carolina Silva Actualizada\",\n    \"documento\": \"45678912301\",\n    \"direccion\": {\n        \"calle\": \"Rua Augusta Atualizada\",\n        \"distrito\": \"Consolação\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"2500\",\n        \"complemento\": \"Sala 810 - Atualizada\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Actualiza los datos de un médico existente"
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 Gestión de Pacientes",
+			"item": [
+				{
+					"name": "Registrar Paciente - Luisa Fernández",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('paciente_id', jsonData.id);",
+									"    pm.test('Paciente registrado exitosamente', function () {",
+									"        pm.response.to.have.status(201);",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('nombre');",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Luisa María Fernández\",\n    \"email\": \"luisa.fernandez@email.com\",\n    \"telefono\": \"11654321\",\n    \"documento\": \"32165498701\",\n    \"direccion\": {\n        \"calle\": \"Rua dos Jardins\",\n        \"distrito\": \"Vila Madalena\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"890\",\n        \"complemento\": \"Casa 2\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes"]
+						},
+						"description": "Registra nueva paciente con teléfono de 8 dígitos"
+					}
+				},
+				{
+					"name": "Registrar Paciente - Pedro Martins",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('paciente_pedro_id', jsonData.id);",
+									"    pm.test('Paciente Pedro registrado', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Pedro Henrique Martins\",\n    \"email\": \"pedro.martins@email.com\",\n    \"telefono\": \"11543210\",\n    \"documento\": \"85296374102\",\n    \"direccion\": {\n        \"calle\": \"Avenida Rebouças\",\n        \"distrito\": \"Pinheiros\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"1500\",\n        \"complemento\": \"Bloco C - Apto 301\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes"]
+						},
+						"description": "Registra nuevo paciente masculino"
+					}
+				},
+				{
+					"name": "Registrar Paciente - Carmen López",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('paciente_carmen_id', jsonData.id);",
+									"    pm.test('Paciente Carmen registrada', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Carmen Elena López\",\n    \"email\": \"carmen.lopez@email.com\",\n    \"telefono\": \"11432109\",\n    \"documento\": \"96385274103\",\n    \"direccion\": {\n        \"calle\": \"Rua Teodoro Sampaio\",\n        \"distrito\": \"Pinheiros\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"800\",\n        \"complemento\": \"Sobrado\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes"]
+						},
+						"description": "Registra nueva paciente para diversificar casos de prueba"
+					}
+				},
+				{
+					"name": "Listar Pacientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de pacientes obtenida', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('content');",
+									"    pm.expect(jsonData).to.have.property('pageable');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/pacientes?page=0&size=10&sort=nombre,asc",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Número de página (inicia en 0)"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Cantidad de elementos por página"
+								},
+								{
+									"key": "sort",
+									"value": "nombre,asc",
+									"description": "Campo y dirección de ordenamiento"
+								}
+							]
+						},
+						"description": "Obtiene una lista paginada de pacientes activos"
+					}
+				},
+				{
+					"name": "Obtener Paciente por ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Paciente obtenido por ID', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('nombre');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/pacientes/{{paciente_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes", "{{paciente_id}}"]
+						},
+						"description": "Obtiene los detalles de un paciente específico por su ID"
+					}
+				}
+			]
+		},
+		{
+			"name": "📅 Gestión de Consultas - COMPLETA",
+			"description": "Todos los endpoints de consultas incluyendo los nuevos agregados",
+			"item": [
+				{
+					"name": "✅ Listar TODAS las Consultas - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de consultas obtenida correctamente', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('content');",
+									"    pm.expect(jsonData).to.have.property('pageable');",
+									"    pm.expect(jsonData).to.have.property('totalElements');",
+									"    console.log('Total de consultas:', jsonData.totalElements);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas?page=0&size=20&sort=fecha,desc",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Página a consultar"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "Elementos por página"
+								},
+								{
+									"key": "sort",
+									"value": "fecha,desc",
+									"description": "Ordenar por fecha descendente"
+								}
+							]
+						},
+						"description": "🆕 NUEVO ENDPOINT: Lista todas las consultas del sistema con paginación"
+					}
+				},
+				{
+					"name": "✅ Obtener Consulta por ID - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    pm.test('Consulta obtenida por ID', function () {",
+									"        pm.response.to.have.status(200);",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('idPaciente');",
+									"        pm.expect(jsonData).to.have.property('idMedico');",
+									"        pm.expect(jsonData).to.have.property('fecha');",
+									"        console.log('Consulta encontrada:', jsonData.id);",
+									"    });",
+									"} else if (pm.response.code === 404) {",
+									"    pm.test('Consulta no encontrada (esperado si no existe)', function () {",
+									"        pm.response.to.have.status(404);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/{{consulta_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "{{consulta_id}}"]
+						},
+						"description": "🆕 NUEVO ENDPOINT: Obtiene una consulta específica por su ID"
+					}
+				},
+				{
+					"name": "✅ Listar Consultas ACTIVAS - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista de consultas activas obtenida', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('content');",
+									"    console.log('Consultas activas encontradas:', jsonData.totalElements);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/activas?page=0&size=15",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "activas"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								}
+							]
+						},
+						"description": "🆕 NUEVO ENDPOINT: Lista solo las consultas que NO están canceladas"
+					}
+				},
+				{
+					"name": "Reservar Consulta - Con Médico Específico",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('consulta_id', jsonData.id);",
+									"    pm.test('Consulta reservada exitosamente', function () {",
+									"        pm.response.to.have.status(201);",
+									"        pm.expect(jsonData).to.have.property('id');",
+									"        pm.expect(jsonData).to.have.property('idPaciente');",
+									"        pm.expect(jsonData).to.have.property('idMedico');",
+									"    });",
+									"    console.log('Nueva consulta creada con ID:', jsonData.id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idPaciente\": {{paciente_id}},\n    \"idMedico\": {{medico_id}},\n    \"fecha\": \"2025-01-15T14:30:00\",\n    \"especialidad\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Reserva una consulta con un médico específico"
+					}
+				},
+				{
+					"name": "Reservar Consulta - Por Especialidad GINECOLOGIA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('consulta_gineco_id', jsonData.id);",
+									"    pm.test('Consulta ginecológica reservada', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idPaciente\": {{paciente_pedro_id}},\n    \"idMedico\": null,\n    \"fecha\": \"2025-01-16T10:00:00\",\n    \"especialidad\": \"GINECOLOGIA\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Reserva consulta por especialidad - el sistema selecciona médico disponible"
+					}
+				},
+				{
+					"name": "Reservar Consulta - Por Especialidad ORTOPEDIA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('consulta_ortopedia_id', jsonData.id);",
+									"    pm.test('Consulta ortopédica reservada', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idPaciente\": {{paciente_carmen_id}},\n    \"idMedico\": null,\n    \"fecha\": \"2025-01-17T15:30:00\",\n    \"especialidad\": \"ORTOPEDIA\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Reserva consulta ortopédica para Carmen"
+					}
+				},
+				{
+					"name": "Cancelar Consulta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Consulta cancelada exitosamente', function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idConsulta\": {{consulta_gineco_id}},\n    \"motivo\": \"PACIENTE_DESISTIO\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Cancela una consulta existente. Motivos: PACIENTE_DESISTIO, MEDICO_CANCELO, OTROS"
+					}
+				}
+			]
+		},
+		{
+			"name": "🧪 Pruebas de Validaciones",
+			"description": "Conjunto de pruebas para verificar las validaciones de negocio",
+			"item": [
+				{
+					"name": "❌ Médico - Teléfono con menos de 8 dígitos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Rechaza teléfono inválido', function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Dr. Test Telefone\",\n    \"email\": \"test.telefone@vollmed.com\",\n    \"telefono\": \"1234567\",\n    \"documento\": \"12345678901\",\n    \"especialidad\": \"CARDIOLOGIA\",\n    \"direccion\": {\n        \"calle\": \"Test\",\n        \"distrito\": \"Test\",\n        \"ciudad\": \"Test\",\n        \"numero\": \"123\",\n        \"complemento\": \"Test\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Debe fallar por teléfono con menos de 8 dígitos"
+					}
+				},
+				{
+					"name": "❌ Consulta - Horario Inválido (Domingo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Rechaza consulta en domingo', function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idPaciente\": {{paciente_id}},\n    \"idMedico\": {{medico_id}},\n    \"fecha\": \"2025-01-19T14:30:00\",\n    \"especialidad\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Debe fallar porque es domingo (día no laborable)"
+					}
+				},
+				{
+					"name": "❌ Consulta - ID Inexistente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Consulta inexistente devuelve 404', function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/99999",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "99999"]
+						},
+						"description": "Debe devolver 404 para ID de consulta inexistente"
+					}
+				}
+			]
+		},
+		{
+			"name": "🔄 Flujo Completo E2E - Actualizado",
+			"description": "Prueba el flujo end-to-end completo con los nuevos endpoints",
+			"item": [
+				{
+					"name": "1. Login E2E",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('token', jsonData.jwTtoken);",
+									"    pm.test('E2E: Login exitoso', function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"login\": \"admin@vollmed.com\",\n    \"clave\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
+						},
+						"description": "Paso 1: Autenticación para flujo E2E"
+					}
+				},
+				{
+					"name": "2. Registrar Médico E2E",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('medico_e2e_id', jsonData.id);",
+									"    pm.test('E2E: Médico registrado', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Dr. E2E Cardiólogo\",\n    \"email\": \"e2e.cardio@vollmed.com\",\n    \"telefono\": \"11000000\",\n    \"documento\": \"99988877766\",\n    \"especialidad\": \"CARDIOLOGIA\",\n    \"direccion\": {\n        \"calle\": \"E2E Test Street\",\n        \"distrito\": \"E2E District\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"999\",\n        \"complemento\": \"E2E Cardio Suite\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/medicos",
+							"host": ["{{base_url}}"],
+							"path": ["medicos"]
+						},
+						"description": "Paso 2: Registro de médico para E2E"
+					}
+				},
+				{
+					"name": "3. Registrar Paciente E2E",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('paciente_e2e_id', jsonData.id);",
+									"    pm.test('E2E: Paciente registrado', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Patricia E2E Test\",\n    \"email\": \"patricia.e2e@test.com\",\n    \"telefono\": \"11111111\",\n    \"documento\": \"11122233344\",\n    \"direccion\": {\n        \"calle\": \"E2E Patient Street\",\n        \"distrito\": \"E2E Patient District\",\n        \"ciudad\": \"São Paulo\",\n        \"numero\": \"111\",\n        \"complemento\": \"E2E Patient House\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["pacientes"]
+						},
+						"description": "Paso 3: Registro de paciente para E2E"
+					}
+				},
+				{
+					"name": "4. Reservar Consulta E2E",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('consulta_e2e_id', jsonData.id);",
+									"    pm.test('E2E: Consulta reservada', function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idPaciente\": {{paciente_e2e_id}},\n    \"idMedico\": {{medico_e2e_id}},\n    \"fecha\": \"2025-01-20T15:00:00\",\n    \"especialidad\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Paso 4: Reserva de consulta para E2E"
+					}
+				},
+				{
+					"name": "5. ✅ Verificar Consulta por ID - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('E2E: Consulta verificada por ID', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get('consulta_e2e_id'));",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/{{consulta_e2e_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "{{consulta_e2e_id}}"]
+						},
+						"description": "🆕 Paso 5: Verificar que la consulta se creó correctamente usando el nuevo endpoint"
+					}
+				},
+				{
+					"name": "6. ✅ Listar Consultas y Verificar - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('E2E: Consulta aparece en listado', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    var consultaEncontrada = jsonData.content.find(c => c.id == pm.collectionVariables.get('consulta_e2e_id'));",
+									"    pm.expect(consultaEncontrada).to.not.be.undefined;",
+									"    console.log('Consulta encontrada en listado:', consultaEncontrada.id);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas?size=50",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"],
+							"query": [
+								{
+									"key": "size",
+									"value": "50"
+								}
+							]
+						},
+						"description": "🆕 Paso 6: Verificar que la consulta aparece en el listado general"
+					}
+				},
+				{
+					"name": "7. Cancelar Consulta E2E",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('E2E: Consulta cancelada', function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idConsulta\": {{consulta_e2e_id}},\n    \"motivo\": \"OTROS\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"]
+						},
+						"description": "Paso 7: Cancelación de consulta para E2E"
+					}
+				},
+				{
+					"name": "8. ✅ Verificar NO aparece en Activas - NUEVO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('E2E: Consulta cancelada NO aparece en activas', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    var consultaEncontrada = jsonData.content.find(c => c.id == pm.collectionVariables.get('consulta_e2e_id'));",
+									"    pm.expect(consultaEncontrada).to.be.undefined;",
+									"    console.log('Verificado: Consulta cancelada no aparece en activas');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/activas?size=100",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "activas"],
+							"query": [
+								{
+									"key": "size",
+									"value": "100"
+								}
+							]
+						},
+						"description": "🆕 Paso 8: Verificar que la consulta cancelada NO aparece en consultas activas"
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Pruebas de Paginación Mejoradas",
+			"description": "Pruebas exhaustivas de paginación con los nuevos endpoints",
+			"item": [
+				{
+					"name": "Consultas - Paginación Primera Página",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Paginación consultas funciona', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.size).to.eql(5);",
+									"    pm.expect(jsonData.number).to.eql(0);",
+									"    console.log('Total consultas:', jsonData.totalElements);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas?page=0&size=5&sort=fecha,desc",
+							"host": ["{{base_url}}"],
+							"path": ["consultas"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "fecha,desc"
+								}
+							]
+						},
+						"description": "Prueba paginación de consultas ordenadas por fecha"
+					}
+				},
+				{
+					"name": "Consultas Activas - Solo 3 elementos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Lista limitada de consultas activas', function () {",
+									"    pm.response.to.have.status(200);",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.content.length).to.be.at.most(3);",
+									"    console.log('Consultas activas mostradas:', jsonData.content.length);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/consultas/activas?size=3",
+							"host": ["{{base_url}}"],
+							"path": ["consultas", "activas"],
+							"query": [
+								{
+									"key": "size",
+									"value": "3"
+								}
+							]
+						},
+						"description": "Obtiene máximo 3 consultas activas para pruebas"
+					}
+				}
+			]
+		}
+	]
+}
+
