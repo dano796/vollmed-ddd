@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import med.voll.api.application.dto.request.DatosReservaConsulta;
 import med.voll.api.application.dto.request.DatosCancelamientoConsulta;
 import med.voll.api.application.dto.response.DatosDetalleConsulta;
-import med.voll.api.application.service.GestionConsultaService;
+import med.voll.api.application.usecase.CancelarConsultaUseCase;
+import med.voll.api.application.usecase.ReservarConsultaUseCase;
+import med.voll.api.application.query.ConsultaQueryService;
 import med.voll.api.domain.aggregates.Consulta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,11 +23,17 @@ import java.net.URI;
 public class ConsultaController {
 
     @Autowired
-    private GestionConsultaService gestionConsultaService;
+    private ReservarConsultaUseCase reservarConsultaUseCase;
+
+    @Autowired
+    private CancelarConsultaUseCase cancelarConsultaUseCase;
+
+    @Autowired
+    private ConsultaQueryService consultaQueryService;
 
     @PostMapping
     public ResponseEntity<DatosDetalleConsulta> reservar(@RequestBody @Valid DatosReservaConsulta datos, UriComponentsBuilder builder) {
-        Consulta consulta = gestionConsultaService.reservarConsulta(datos);
+        Consulta consulta = reservarConsultaUseCase.execute(datos);
         DatosDetalleConsulta datosDetalle = new DatosDetalleConsulta(consulta);
         URI url = builder.path("/consultas/{id}").buildAndExpand(consulta.getId()).toUri();
         return ResponseEntity.created(url).body(datosDetalle);
@@ -33,13 +41,13 @@ public class ConsultaController {
 
     @DeleteMapping
     public ResponseEntity<Void> cancelar(@RequestBody @Valid DatosCancelamientoConsulta datos) {
-        gestionConsultaService.cancelarConsulta(datos);
+        cancelarConsultaUseCase.execute(datos);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
     public ResponseEntity<Page<DatosDetalleConsulta>> listarConsultas(@PageableDefault(size = 10) Pageable paginacion) {
-        Page<Consulta> consultas = gestionConsultaService.listarConsultas(paginacion);
+        Page<Consulta> consultas = consultaQueryService.listarConsultas(paginacion);
         Page<DatosDetalleConsulta> datosConsultas = consultas.map(DatosDetalleConsulta::new);
         return ResponseEntity.ok(datosConsultas);
     }
@@ -47,11 +55,11 @@ public class ConsultaController {
     @GetMapping("/{id}")
     public ResponseEntity<DatosDetalleConsulta> obtenerConsultaPorId(@PathVariable Long id) {
         try {
-            Consulta consulta = gestionConsultaService.obtenerConsultaPorId(id);
+            Consulta consulta = consultaQueryService.obtenerConsultaPorId(id);
             DatosDetalleConsulta datosDetalle = new DatosDetalleConsulta(consulta);
             return ResponseEntity.ok(datosDetalle);
-        } catch (med.voll.api.domain.shared.ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            throw new med.voll.api.domain.shared.ResourceNotFoundException("Consulta", id);
         }
     }
 

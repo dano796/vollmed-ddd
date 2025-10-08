@@ -3,7 +3,10 @@ package med.voll.api.api.controller;
 import jakarta.validation.Valid;
 import med.voll.api.application.dto.request.*;
 import med.voll.api.application.dto.response.*;
-import med.voll.api.application.service.GestionMedicoService;
+import med.voll.api.application.usecase.ActualizarMedicoUseCase;
+import med.voll.api.application.usecase.DesactivarMedicoUseCase;
+import med.voll.api.application.usecase.RegistrarMedicoUseCase;
+import med.voll.api.application.query.MedicoQueryService;
 import med.voll.api.domain.entities.Medico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,11 +23,20 @@ import java.net.URI;
 public class MedicoController {
 
     @Autowired
-    private GestionMedicoService gestionMedicoService;
+    private RegistrarMedicoUseCase registrarMedicoUseCase;
+
+    @Autowired
+    private ActualizarMedicoUseCase actualizarMedicoUseCase;
+
+    @Autowired
+    private DesactivarMedicoUseCase desactivarMedicoUseCase;
+
+    @Autowired
+    private MedicoQueryService medicoQueryService;
 
     @PostMapping
     public ResponseEntity<DatosRespuestaMedico> registrarMedico(@RequestBody @Valid DatosRegistroMedico datosRegistroMedico, UriComponentsBuilder uriComponentsBuilder) {
-        Medico medico = gestionMedicoService.registrarMedico(datosRegistroMedico);
+        Medico medico = registrarMedicoUseCase.execute(datosRegistroMedico);
         DatosRespuestaMedico datosRespuestaMedico = new DatosRespuestaMedico(medico);
         URI url = uriComponentsBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();
         return ResponseEntity.created(url).body(datosRespuestaMedico);
@@ -32,27 +44,27 @@ public class MedicoController {
 
     @GetMapping
     public ResponseEntity<Page<DatosListadoMedico>> listadoMedicos(@PageableDefault(size = 10) Pageable paginacion) {
-        Page<Medico> medicos = gestionMedicoService.listarMedicos(paginacion);
+        Page<Medico> medicos = medicoQueryService.listarMedicos(paginacion);
         Page<DatosListadoMedico> datosListado = medicos.map(DatosListadoMedico::new);
         return ResponseEntity.ok(datosListado);
     }
 
     @PutMapping
     public ResponseEntity<DatosRespuestaMedico> actualizarMedico(@RequestBody @Valid DatosActualizarMedico datosActualizarMedico) {
-        Medico medico = gestionMedicoService.actualizarMedico(datosActualizarMedico);
+        Medico medico = actualizarMedicoUseCase.execute(datosActualizarMedico);
         return ResponseEntity.ok(new DatosRespuestaMedico(medico));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarMedico(@PathVariable Long id) {
-        gestionMedicoService.eliminarMedico(id);
+        desactivarMedicoUseCase.execute(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DatosRespuestaMedico> retornaDatosMedico(@PathVariable Long id) {
         try {
-            Medico medico = gestionMedicoService.obtenerMedico(id);
+            Medico medico = medicoQueryService.obtenerMedico(id);
             return ResponseEntity.ok(new DatosRespuestaMedico(medico));
         } catch (Exception e) {
             // Si no se encuentra el médico, debería devolver 404, no 403
