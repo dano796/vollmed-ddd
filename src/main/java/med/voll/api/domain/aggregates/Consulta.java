@@ -37,13 +37,19 @@ public class Consulta extends AggregateRoot {
         this.paciente = paciente;
         this.fecha = fecha;
         this.motivoCancelamiento = null;
+    }
 
-        // Emitir evento de consulta reservada
+
+    public void marcarComoReservada() {
+        if (this.getId() == null) {
+            throw new IllegalStateException("No se puede generar evento de consulta reservada sin ID");
+        }
+
         addDomainEvent(new ConsultaReservadaEvent(
                 this.getId(),
-                paciente.getId(),
-                medico.getId(),
-                fecha
+                this.paciente.getId(),
+                this.medico.getId(),
+                this.fecha
         ));
     }
 

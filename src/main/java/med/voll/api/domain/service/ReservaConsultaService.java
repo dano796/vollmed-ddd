@@ -45,7 +45,11 @@ public class ReservaConsultaService {
 
         // Crear y guardar la consulta
         Consulta consulta = new Consulta(medico, paciente, fecha);
-        return consultaRepository.save(consulta);
+        consulta = consultaRepository.save(consulta);
+
+        consulta.marcarComoReservada();
+
+        return consulta;
     }
 
     private Medico elegirMedico(Long idMedico, Especialidad especialidad, LocalDateTime fecha) {

@@ -31,7 +31,6 @@ public class GestionConsultaService {
         this.consultaRepository = consultaRepository;
     }
 
-    // ✅ SIMPLIFICADO: Recibe DTO directamente
     public Consulta reservarConsulta(DatosReservaConsulta datos) {
         Consulta consulta = reservaService.reservar(
             datos.idPaciente(),
@@ -44,7 +43,6 @@ public class GestionConsultaService {
         return consulta;
     }
 
-    // ✅ SIMPLIFICADO: Recibe DTO directamente
     public void cancelarConsulta(DatosCancelamientoConsulta datos) {
         Consulta consulta = cancelacionService.cancelar(datos.idConsulta(), datos.motivo());
         eventPublisher.publishEvents(consulta);
