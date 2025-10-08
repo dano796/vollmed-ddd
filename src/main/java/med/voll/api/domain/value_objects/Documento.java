@@ -1,17 +1,18 @@
 package med.voll.api.domain.value_objects;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import med.voll.api.domain.shared.DomainException;
 
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@NoArgsConstructor
-public class Documento {
-    private String valor;
+public final class Documento {
+    private final String valor;
+
+    // Constructor sin argumentos SOLO para JPA (protegido)
+    protected Documento() {
+        this.valor = null; // JPA lo asignará después
+    }
 
     public Documento(String numero) {
         this.validar(numero);
@@ -26,6 +27,15 @@ public class Documento {
         if (numeroLimpio.length() < 8 || numeroLimpio.length() > 14) {
             throw new DomainException("El número de documento debe tener entre 8 y 14 dígitos");
         }
+    }
+
+    // Método inmutable para actualizar el documento
+    public Documento actualizar(String nuevoNumero) {
+        return new Documento(nuevoNumero);
+    }
+
+    public String getValor() {
+        return valor;
     }
 
     @Override

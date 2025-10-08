@@ -1,8 +1,6 @@
 package med.voll.api.domain.value_objects;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import med.voll.api.domain.shared.DomainException;
 
 import java.time.LocalDateTime;
@@ -10,10 +8,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@NoArgsConstructor
-public class FechaConsulta {
-    private LocalDateTime valor;
+public final class FechaConsulta {
+    private final LocalDateTime valor;
+
+    // Constructor sin argumentos SOLO para JPA (protegido)
+    protected FechaConsulta() {
+        this.valor = null; // JPA lo asignará después
+    }
 
     public FechaConsulta(LocalDateTime fecha) {
         this.validar(fecha);
@@ -39,6 +40,21 @@ public class FechaConsulta {
         }
     }
 
+    // Método inmutable para actualizar la fecha
+    public FechaConsulta actualizar(LocalDateTime nuevaFecha) {
+        return new FechaConsulta(nuevaFecha);
+    }
+
+    // Método inmutable para reprogramar (agregar/quitar tiempo)
+    public FechaConsulta reprogramar(int horas, int minutos) {
+        LocalDateTime nuevaFecha = this.valor.plusHours(horas).plusMinutes(minutos);
+        return new FechaConsulta(nuevaFecha);
+    }
+
+    public LocalDateTime getValor() {
+        return valor;
+    }
+
     public boolean esAntesDe(FechaConsulta otra) {
         return this.valor.isBefore(otra.valor);
     }
@@ -62,5 +78,10 @@ public class FechaConsulta {
     @Override
     public int hashCode() {
         return Objects.hash(valor);
+    }
+
+    @Override
+    public String toString() {
+        return formatear();
     }
 }

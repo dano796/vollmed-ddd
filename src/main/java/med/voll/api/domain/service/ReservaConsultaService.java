@@ -59,11 +59,15 @@ public class ReservaConsultaService {
                     .orElseThrow(() -> new DomainException("Medico no encontrado"));
         }
 
+        // Si no se especifica especialidad, buscar cualquier médico disponible
         if (especialidad == null) {
-            throw new DomainException("Especialidad requerida cuando no se especifica un medico");
+            // Buscar médicos activos disponibles sin filtro de especialidad
+            // Para esto necesitaríamos un método que busque médicos disponibles sin especialidad específica
+            // Por ahora, lanzamos excepción indicando que se necesita al menos uno de los dos
+            throw new DomainException("Debe especificar un médico específico o una especialidad para la reserva");
         }
 
-        // Usar PageRequest para obtener solo 1 médico aleatorio
+        // Usar PageRequest para obtener solo 1 médico aleatorio de la especialidad
         List<Medico> medicosDisponibles = medicoRepository.findMedicosDisponiblesPorEspecialidadYFecha(
             especialidad,
             fecha,

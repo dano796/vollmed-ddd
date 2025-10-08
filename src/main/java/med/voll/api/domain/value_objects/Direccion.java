@@ -1,22 +1,27 @@
 package med.voll.api.domain.value_objects;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import med.voll.api.application.dto.DatosDireccion;
 import med.voll.api.domain.shared.DomainException;
 
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@NoArgsConstructor
-public class Direccion {
-    private String calle;
-    private String distrito;
-    private String ciudad;
-    private String numero;
-    private String complemento;
+public final class Direccion {
+    private final String calle;
+    private final String distrito;
+    private final String ciudad;
+    private final String numero;
+    private final String complemento;
+
+    // Constructor sin argumentos SOLO para JPA (protegido)
+    protected Direccion() {
+        this.calle = null;
+        this.distrito = null;
+        this.ciudad = null;
+        this.numero = null;
+        this.complemento = null;
+    }
 
     public Direccion(String calle, String distrito, String ciudad, String numero, String complemento) {
         this.validar(calle, distrito, ciudad, numero);
@@ -55,6 +60,27 @@ public class Direccion {
                 nuevaDireccion.numero() != null ? nuevaDireccion.numero() : this.numero,
                 nuevaDireccion.complemento() != null ? nuevaDireccion.complemento() : this.complemento
         );
+    }
+
+    // Getters para campos inmutables finales
+    public String getCalle() {
+        return calle;
+    }
+
+    public String getDistrito() {
+        return distrito;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
     }
 
     @Override

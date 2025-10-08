@@ -3,9 +3,21 @@ package med.voll.api.domain.interfaces.repository;
 import med.voll.api.domain.entities.Paciente;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IPacienteRepository extends JpaRepository<Paciente, Long> {
+import java.util.Optional;
 
-    Page<Paciente> findByActivoTrue(Pageable paginacion);
+/**
+ * Contrato de dominio para Paciente. Implementación concreta en infraestructura.
+ */
+public interface IPacienteRepository {
+
+    Paciente save(Paciente paciente);
+
+    Optional<Paciente> findById(Long id);
+
+    Paciente getReferenceById(Long id);
+
+    Page<Paciente> findAll(Pageable pageable);
+
+    Page<Paciente> findByActivoTrue(Pageable pageable);
 }

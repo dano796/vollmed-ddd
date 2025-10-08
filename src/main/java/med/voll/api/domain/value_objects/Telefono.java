@@ -1,21 +1,22 @@
 package med.voll.api.domain.value_objects;
 
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import med.voll.api.domain.shared.DomainException;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Embeddable
-@Getter
-@NoArgsConstructor
-public class Telefono {
+public final class Telefono {
     private static final Pattern TELEFONO_PATTERN =
         Pattern.compile("^[0-9]{8,15}$");
 
-    private String valor;
+    private final String valor;
+
+    // Constructor sin argumentos SOLO para JPA (protegido)
+    protected Telefono() {
+        this.valor = null; // JPA lo asignará después
+    }
 
     public Telefono(String numero) {
         this.validar(numero);
@@ -30,6 +31,15 @@ public class Telefono {
         if (!TELEFONO_PATTERN.matcher(numeroLimpio).matches()) {
             throw new DomainException("El número de teléfono debe tener entre 8 y 15 dígitos");
         }
+    }
+
+    // Método inmutable para actualizar el teléfono
+    public Telefono actualizar(String nuevoNumero) {
+        return new Telefono(nuevoNumero);
+    }
+
+    public String getValor() {
+        return valor;
     }
 
     @Override
