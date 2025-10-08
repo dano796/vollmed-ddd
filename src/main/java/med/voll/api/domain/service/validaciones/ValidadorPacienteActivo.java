@@ -1,4 +1,4 @@
-package med.voll.api.domain.service;
+package med.voll.api.domain.service.validaciones;
 
 import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
 import med.voll.api.domain.shared.DomainException;
