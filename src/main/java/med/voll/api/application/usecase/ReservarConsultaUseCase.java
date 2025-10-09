@@ -2,7 +2,7 @@ package med.voll.api.application.usecase;
 
 import med.voll.api.application.dto.request.DatosReservaConsulta;
 import med.voll.api.domain.aggregates.Consulta;
-import med.voll.api.domain.service.ReservaConsultaService;
+import med.voll.api.domain.interfaces.negocio.IReservaConsultaService;
 import med.voll.api.infrastructure.service.DomainEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ReservarConsultaUseCase {
 
-    private final ReservaConsultaService reservaService;
+    private final IReservaConsultaService reservaService;
     private final DomainEventPublisher eventPublisher;
 
-    public ReservarConsultaUseCase(ReservaConsultaService reservaService,
+    public ReservarConsultaUseCase(IReservaConsultaService reservaService,
                                   DomainEventPublisher eventPublisher) {
         this.reservaService = reservaService;
         this.eventPublisher = eventPublisher;

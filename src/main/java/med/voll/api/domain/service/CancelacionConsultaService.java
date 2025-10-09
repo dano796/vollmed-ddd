@@ -1,20 +1,21 @@
 package med.voll.api.domain.service;
 
 import med.voll.api.domain.aggregates.Consulta;
-import med.voll.api.domain.interfaces.negocio.ValidadorCancelacionConsulta;
+import med.voll.api.domain.interfaces.negocio.ICancelacionConsultaService;
+import med.voll.api.domain.interfaces.negocio.IValidadorCancelacionConsulta;
 import med.voll.api.domain.interfaces.repository.IConsultaRepository;
 import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.value_objects.MotivoCancelamiento;
 
 import java.util.List;
 
-public class CancelacionConsultaService {
+public class CancelacionConsultaService implements ICancelacionConsultaService {
 
     private final IConsultaRepository consultaRepository;
-    private final List<ValidadorCancelacionConsulta> validadores;
+    private final List<IValidadorCancelacionConsulta> validadores;
 
     public CancelacionConsultaService(IConsultaRepository consultaRepository,
-                                    List<ValidadorCancelacionConsulta> validadores) {
+                                    List<IValidadorCancelacionConsulta> validadores) {
         this.consultaRepository = consultaRepository;
         this.validadores = validadores;
     }

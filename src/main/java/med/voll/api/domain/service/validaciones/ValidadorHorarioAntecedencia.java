@@ -1,7 +1,7 @@
 package med.voll.api.domain.service.validaciones;
 
 import med.voll.api.domain.aggregates.Consulta;
-import med.voll.api.domain.interfaces.negocio.ValidadorCancelacionConsulta;
+import med.voll.api.domain.interfaces.negocio.IValidadorCancelacionConsulta;
 import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.value_objects.MotivoCancelamiento;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Component
-public class ValidadorHorarioAntecedencia implements ValidadorCancelacionConsulta {
+public class ValidadorHorarioAntecedencia implements IValidadorCancelacionConsulta {
 
     public void validar(Consulta consulta, MotivoCancelamiento motivo) {
         var ahora = LocalDateTime.now();

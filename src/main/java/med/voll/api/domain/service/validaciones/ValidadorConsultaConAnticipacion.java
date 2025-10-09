@@ -1,18 +1,16 @@
 package med.voll.api.domain.service.validaciones;
 
-import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
-import med.voll.api.domain.shared.DomainException;
 import med.voll.api.domain.entities.Medico;
 import med.voll.api.domain.entities.Paciente;
-import org.springframework.core.annotation.Order;
+import med.voll.api.domain.interfaces.negocio.IValidadorReservaConsulta;
+import med.voll.api.domain.shared.DomainException;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Component
-@Order(2)
-public class ValidadorConsultaConAnticipacion implements ValidadorReservaConsulta {
+public class ValidadorConsultaConAnticipacion implements IValidadorReservaConsulta {
 
     @Override
     public void validar(Paciente paciente, Medico medico, LocalDateTime fecha) {

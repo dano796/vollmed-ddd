@@ -3,7 +3,8 @@ package med.voll.api.domain.service;
 import med.voll.api.domain.aggregates.Consulta;
 import med.voll.api.domain.entities.Medico;
 import med.voll.api.domain.entities.Paciente;
-import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
+import med.voll.api.domain.interfaces.negocio.IReservaConsultaService;
+import med.voll.api.domain.interfaces.negocio.IValidadorReservaConsulta;
 import med.voll.api.domain.interfaces.repository.IConsultaRepository;
 import med.voll.api.domain.interfaces.repository.IMedicoRepository;
 import med.voll.api.domain.interfaces.repository.IPacienteRepository;
@@ -13,17 +14,17 @@ import med.voll.api.domain.value_objects.Especialidad;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ReservaConsultaService {
+public class ReservaConsultaService implements IReservaConsultaService {
 
     private final IConsultaRepository consultaRepository;
     private final IMedicoRepository medicoRepository;
     private final IPacienteRepository pacienteRepository;
-    private final List<ValidadorReservaConsulta> validadores;
+    private final List<IValidadorReservaConsulta> validadores;
 
     public ReservaConsultaService(IConsultaRepository consultaRepository,
                                  IMedicoRepository medicoRepository,
                                  IPacienteRepository pacienteRepository,
-                                 List<ValidadorReservaConsulta> validadores) {
+                                 List<IValidadorReservaConsulta> validadores) {
         this.consultaRepository = consultaRepository;
         this.medicoRepository = medicoRepository;
         this.pacienteRepository = pacienteRepository;

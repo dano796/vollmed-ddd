@@ -3,7 +3,7 @@ package med.voll.api.domain.shared;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import med.voll.api.domain.interfaces.negocio.DomainEvent;
+import med.voll.api.domain.interfaces.negocio.IDomainEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +18,7 @@ public abstract class AggregateRoot {
     private Long id;
 
     @Transient
-    private final List<DomainEvent> domainEvents = new ArrayList<>();
+    private final List<IDomainEvent> domainEvents = new ArrayList<>();
 
     protected AggregateRoot() {}
 
@@ -30,11 +30,11 @@ public abstract class AggregateRoot {
         return this.id == null;
     }
 
-    protected void addDomainEvent(DomainEvent event) {
+    protected void addDomainEvent(IDomainEvent event) {
         this.domainEvents.add(event);
     }
 
-    public List<DomainEvent> getDomainEvents() {
+    public List<IDomainEvent> getDomainEvents() {
         return Collections.unmodifiableList(domainEvents);
     }
 

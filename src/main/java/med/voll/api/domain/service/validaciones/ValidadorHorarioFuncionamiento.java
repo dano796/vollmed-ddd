@@ -2,16 +2,14 @@ package med.voll.api.domain.service.validaciones;
 
 import med.voll.api.domain.entities.Medico;
 import med.voll.api.domain.entities.Paciente;
-import med.voll.api.domain.interfaces.negocio.ValidadorReservaConsulta;
+import med.voll.api.domain.interfaces.negocio.IValidadorReservaConsulta;
 import med.voll.api.domain.shared.DomainException;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
-@Order(1)
-public class ValidadorHorarioFuncionamiento implements ValidadorReservaConsulta {
+public class ValidadorHorarioFuncionamiento implements IValidadorReservaConsulta {
 
     public void validar(Paciente paciente, Medico medico, LocalDateTime fecha) {
         var domingo = fecha.getDayOfWeek().getValue() == 7;

@@ -2,7 +2,7 @@ package med.voll.api.application.usecase;
 
 import med.voll.api.application.dto.request.DatosCancelamientoConsulta;
 import med.voll.api.domain.aggregates.Consulta;
-import med.voll.api.domain.service.CancelacionConsultaService;
+import med.voll.api.domain.interfaces.negocio.ICancelacionConsultaService;
 import med.voll.api.infrastructure.service.DomainEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CancelarConsultaUseCase {
 
-    private final CancelacionConsultaService cancelacionService;
+    private final ICancelacionConsultaService cancelacionService;
     private final DomainEventPublisher eventPublisher;
 
-    public CancelarConsultaUseCase(CancelacionConsultaService cancelacionService,
+    public CancelarConsultaUseCase(ICancelacionConsultaService cancelacionService,
                                   DomainEventPublisher eventPublisher) {
         this.cancelacionService = cancelacionService;
         this.eventPublisher = eventPublisher;

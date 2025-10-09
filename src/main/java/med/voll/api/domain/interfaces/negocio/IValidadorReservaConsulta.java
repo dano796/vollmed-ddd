@@ -5,6 +5,6 @@ import med.voll.api.domain.entities.Paciente;
 
 import java.time.LocalDateTime;
 
-public interface ValidadorReservaConsulta {
+public interface IValidadorReservaConsulta {
     void validar(Paciente paciente, Medico medico, LocalDateTime fecha);
 }
