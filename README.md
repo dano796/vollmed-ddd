@@ -65,11 +65,10 @@ src/main/java/med/voll/api/
 
 **Responsabilidad**: Coordinar casos de uso y orquestar el dominio.
 
-#### `command/`
-Comandos para operaciones de escritura (patrón CQRS preparado)
-
 #### `dto/`
 **Data Transfer Objects** para transferencia de datos entre capas:
+
+- **`DatosDireccion.java`**: Información de dirección compartida
 
 ##### `request/`
 - **`DatosAutenticacionUsuario.java`**: Credenciales de login
@@ -79,7 +78,6 @@ Comandos para operaciones de escritura (patrón CQRS preparado)
 - **`DatosRegistroPaciente.java`**: Registro de nuevo paciente
 - **`DatosActualizarMedico.java`**: Actualización de médico
 - **`DatosActualizacionPaciente.java`**: Actualización de paciente
-- **`DatosDireccion.java`**: Información de dirección
 
 ##### `response/`
 - **`DatosJWTToken.java`**: Token de autenticación
@@ -89,13 +87,21 @@ Comandos para operaciones de escritura (patrón CQRS preparado)
 - **`DatosRespuestaMedico.java`**: Respuesta de médico
 
 #### `query/`
-Consultas para operaciones de lectura (patrón CQRS preparado)
+**Query Services** para operaciones de lectura (patrón CQRS):
+- **`ConsultaQueryService.java`**: Consultas de consultas médicas
+- **`MedicoQueryService.java`**: Consultas de médicos
+- **`PacienteQueryService.java`**: Consultas de pacientes
 
-#### `service/`
-**Application Services** que coordinan casos de uso:
-- **`GestionConsultaService.java`**: Orquesta operaciones de consultas
-- **`GestionMedicoService.java`**: Orquesta operaciones de médicos
-- **`GestionPacienteService.java`**: Orquesta operaciones de pacientes
+#### `usecase/`
+**Use Cases** que implementan casos de uso específicos:
+- **`ReservarConsultaUseCase.java`**: Caso de uso para reservar consultas
+- **`CancelarConsultaUseCase.java`**: Caso de uso para cancelar consultas
+- **`RegistrarMedicoUseCase.java`**: Caso de uso para registrar médicos
+- **`ActualizarMedicoUseCase.java`**: Caso de uso para actualizar médicos
+- **`DesactivarMedicoUseCase.java`**: Caso de uso para desactivar médicos
+- **`RegistrarPacienteUseCase.java`**: Caso de uso para registrar pacientes
+- **`ActualizarPacienteUseCase.java`**: Caso de uso para actualizar pacientes
+- **`InactivarPacienteUseCase.java`**: Caso de uso para inactivar pacientes
 
 ### 🎯 Domain Layer (`domain/`)
 
@@ -120,6 +126,15 @@ Consultas para operaciones de lectura (patrón CQRS preparado)
 - **`ConsultaCanceladaEvent.java`**: Se dispara al cancelar una consulta
 
 #### `interfaces/`
+**Interfaces del dominio** organizadas por propósito:
+
+##### `negocio/`
+Interfaces para lógica de negocio:
+- **`DomainEvent.java`**: Interfaz base para eventos de dominio
+- **`ValidadorReservaConsulta.java`**: Interfaz base para validaciones de reserva
+- **`ValidadorCancelacionConsulta.java`**: Interfaz base para validaciones de cancelación
+
+##### `repository/`
 **Repository Interfaces** (puertos hacia infraestructura):
 - **`IConsultaRepository.java`**: Persistencia de consultas
 - **`IMedicoRepository.java`**: Persistencia de médicos
@@ -133,21 +148,21 @@ Consultas para operaciones de lectura (patrón CQRS preparado)
 - **`ReservaConsultaService.java`**: Lógica de reserva con validaciones
 - **`CancelacionConsultaService.java`**: Lógica de cancelación
 
-##### Validadores (Chain of Responsibility):
-- **`ValidadorReservaConsulta.java`**: Interfaz base para validaciones
+##### `validaciones/` (Chain of Responsibility):
+**Validadores para Reserva de Consultas**:
 - **`ValidadorMedicoActivo.java`**: Valida que el médico esté activo
 - **`ValidadorPacienteActivo.java`**: Valida que el paciente esté activo
 - **`ValidadorHorarioFuncionamiento.java`**: Valida horario laboral
 - **`ValidadorHorarioAntecedencia.java`**: Valida anticipación mínima
 - **`ValidadorMedicoConOtraConsulta.java`**: Evita consultas simultáneas
 - **`ValidadorPacienteSinConsulta.java`**: Evita múltiples consultas por día
+
+**Validadores para Cancelación de Consultas**:
 - **`ValidadorConsultaConAnticipacion.java`**: Valida anticipación para cancelar
-- **`ValidadorCancelacionConsulta.java`**: Interfaz base para cancelaciones
 
 #### `shared/`
 **Elementos compartidos del dominio**:
 - **`AggregateRoot.java`**: Clase base para agregados con eventos
-- **`DomainEvent.java`**: Interfaz base para eventos de dominio
 - **`DomainException.java`**: Excepción específica del dominio
 - **`ResourceNotFoundException.java`**: Excepción para recursos no encontrados
 
@@ -177,6 +192,23 @@ Consultas para operaciones de lectura (patrón CQRS preparado)
 #### `messaging/`
 **Manejo de eventos**:
 - **`ConsultaEventHandler.java`**: Procesa eventos de consultas (notificaciones, logs)
+
+#### `repository/`
+**Implementación de persistencia con patrón Adapter**:
+
+##### `adapters/`
+**Repository Adapters** que implementan las interfaces del dominio:
+- **`ConsultaRepositoryAdapter.java`**: Adapter para repositorio de consultas
+- **`MedicoRepositoryAdapter.java`**: Adapter para repositorio de médicos  
+- **`PacienteRepositoryAdapter.java`**: Adapter para repositorio de pacientes
+- **`UsuarioRepositoryAdapter.java`**: Adapter para repositorio de usuarios
+
+##### `springdata/`
+**Spring Data JPA Repositories** para acceso a datos:
+- **`SpringDataConsultaRepository.java`**: JPA Repository para consultas
+- **`SpringDataMedicoRepository.java`**: JPA Repository para médicos
+- **`SpringDataPacienteRepository.java`**: JPA Repository para pacientes
+- **`SpringDataUsuarioRepository.java`**: JPA Repository para usuarios
 
 #### `service/`
 **Servicios de infraestructura**:
