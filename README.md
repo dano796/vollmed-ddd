@@ -238,7 +238,7 @@ Interfaces para lógica de negocio:
 
 ### 📅 Reserva de Consulta
 1. Request → `ConsultaController.reservar()`
-2. `GestionConsultaService` coordina el proceso
+2. `ReservarConsultaUseCase` coordina el proceso
 3. `ReservaConsultaService` ejecuta validaciones:
    - Médico activo (`ValidadorMedicoActivo`)
    - Paciente activo (`ValidadorPacienteActivo`)
@@ -251,11 +251,23 @@ Interfaces para lógica de negocio:
 
 ### ❌ Cancelación de Consulta
 1. Request → `ConsultaController.cancelar()`
-2. `GestionConsultaService` coordina
+2. `CancelarConsultaUseCase` coordina el proceso
 3. `CancelacionConsultaService` valida cancelación
 4. `Consulta.cancelar()` actualiza estado
 5. `ConsultaCanceladaEvent` es generado
 6. `ConsultaEventHandler` procesa evento
+
+### 👨‍⚕️ Gestión de Médicos
+1. **Registro**: `MedicoController` → `RegistrarMedicoUseCase` → `Medico` entity
+2. **Actualización**: `MedicoController` → `ActualizarMedicoUseCase` → `Medico` entity
+3. **Desactivación**: `MedicoController` → `DesactivarMedicoUseCase` → `Medico` entity
+4. **Consulta**: `MedicoController` → `MedicoQueryService` → Repository
+
+### 👥 Gestión de Pacientes
+1. **Registro**: `PacienteController` → `RegistrarPacienteUseCase` → `Paciente` entity
+2. **Actualización**: `PacienteController` → `ActualizarPacienteUseCase` → `Paciente` entity
+3. **Inactivación**: `PacienteController` → `InactivarPacienteUseCase` → `Paciente` entity
+4. **Consulta**: `PacienteController` → `PacienteQueryService` → Repository
 
 ## 🏃‍♂️ Cómo Ejecutar
 
