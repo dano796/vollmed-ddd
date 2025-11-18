@@ -273,15 +273,15 @@ Interfaces para lógica de negocio:
 
 ```bash
 # Clonar repositorio
-git clone <repository-url>
+git clone https://github.com/FelipeTM25/vollmed-ddd.git
 
 # Navegar al directorio
-cd vollmed-api-master
+cd vollmed-ddd
 
 # Configurar base de datos PostgreSQL
-# Ejecutar script: vollmed-postgresql-schema.sql
+# Ejecutar el script: vollmed-postgresql-schema.sql
 
-# Configurar application.properties con datos de BD
+# Configurar application.properties con los datos de la BD
 
 # Ejecutar aplicación
 ./mvnw spring-boot:run
@@ -310,6 +310,9 @@ mvnw.cmd spring-boot:run
 
 ---
 
-## 📞 Contacto
+### Desarrollado por
 
-**Desarrollado para Voll Med - Sistema de Gestión de Clínica Médica**
+- Daniel Ortiz Aristizábal
+- Felipe Torres Montoya
+
+### Arquitectura de Software - Universidad Pontificia Bolivariana
